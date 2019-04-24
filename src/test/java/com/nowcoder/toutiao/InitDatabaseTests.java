@@ -1,8 +1,10 @@
 package com.nowcoder.toutiao;
 
 import com.nowcoder.toutiao.ToutiaoApplication;
+import com.nowcoder.toutiao.dao.LoginTicketDAO;
 import com.nowcoder.toutiao.dao.NewsDAO;
 import com.nowcoder.toutiao.dao.UserDAO;
+import com.nowcoder.toutiao.model.LoginTicket;
 import com.nowcoder.toutiao.model.News;
 import com.nowcoder.toutiao.model.User;
 import org.junit.Assert;
@@ -25,6 +27,9 @@ public class InitDatabaseTests {
     UserDAO userDAO;
     @Autowired
     NewsDAO newsDAO;
+
+    @Autowired
+    LoginTicketDAO loginTicketDAO;
     @Test
     public void initData() {
         Random random = new Random();
@@ -50,10 +55,28 @@ public class InitDatabaseTests {
 
             user.setPassword("newpassword");
             userDAO.updatePassword(user);
+            LoginTicket ticket = new LoginTicket();
+            ticket.setStatus(0);
+            ticket.setUserId(i+1);
+            ticket.setExpired(date);
+            ticket.setTicket(String.format("TICKET%d", i+1));
+
+
+
+
+
+            //  添加ticket
+            loginTicketDAO.addTicket(ticket);
+            //  更新ticket
+            loginTicketDAO.updateStatus(ticket.getTicket(), 2);
         }
         Assert.assertEquals("newpassword", userDAO.selectById(1).getPassword());
         userDAO.deleteById(1);
         Assert.assertNull(userDAO.selectById(1));
+
+
+        Assert.assertEquals(1,loginTicketDAO.selectByTicket("ticket1").getUserId());
+        Assert.assertEquals(2,loginTicketDAO.selectByTicket("ticket1").getStatus());
     }
 
 }

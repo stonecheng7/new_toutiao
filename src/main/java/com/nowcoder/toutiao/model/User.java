@@ -54,7 +54,7 @@ public class User {
         this.salt = salt;
     }
 
-    public String getHeadUrl() {
+    public String getHeadUrl(String format) {
         return headUrl;
     }
 
