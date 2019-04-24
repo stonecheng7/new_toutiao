@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>头条资讯 - 牛客网</title>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="keywords" content="读《Web 全栈工程师的自我修养》">
@@ -12,6 +13,7 @@
     <link rel="stylesheet" media="all" href="/styles/style.css">
 
 </head>
+
 <body class="welcome_index">
 
 <header class="navbar navbar-default navbar-static-top bs-docs-nav" id="top" role="banner">
@@ -38,8 +40,10 @@
                 #if ($user)
                 <li class="js-login"><a href="javascript:void(0);">$!{user.name}</a></li>
                 #else
-                <li class="js-login"><a href="javascript:void(0);">登陆</a></li>
+                <li class="js-login"><a href="http://localhost:8080/register">注册</a></li>
                 #end
+                <li class="js-login"><a href="http://localhost:8080/login">登录</a></li>
+                <li class="js-login"><a href="http://localhost:8080/logout">注销账户</a></li>
             </ul>
 
         </nav>
