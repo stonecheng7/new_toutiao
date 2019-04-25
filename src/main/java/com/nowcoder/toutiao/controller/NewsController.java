@@ -11,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -41,21 +38,21 @@ public class NewsController {
     HostHolder hostHolder;
     //上传图片
     @RequestMapping(path = {"/uploadImage/"}, method = {RequestMethod.POST})
-   // @ResponseBody
+    @ResponseBody
     public String uploadImage(@RequestParam("file") MultipartFile file){
         try{
             //根据图片的文件的URL，确定的是上传图片
             String fileUrl = qiniuService.saveImage(file);
             if(fileUrl==null){
-                //return ToutiaoUtil.getJSONString(1,"上传图片失败");
-                return "redirect:/upload";
+                return ToutiaoUtil.getJSONString(1,"上传图片失败");
+                //return "redirect:/upload";
             }
-           // return ToutiaoUtil.getJSONString(0,fileUrl);
-            return "addNews";
+            return ToutiaoUtil.getJSONString(0,fileUrl);
+           // return "addNews";
         }catch (Exception e){
             logger.error("上传图片失败",e.getMessage());
-            //return ToutiaoUtil.getJSONString(1,"上传图片失败");
-            return "redirect:/upload";
+            return ToutiaoUtil.getJSONString(1,"上传图片失败");
+            // return "redirect:/upload";
         }
     }
     //展示图片，返回给前端显示
@@ -74,9 +71,9 @@ public class NewsController {
     }
 
     //增加新闻信息
-    @RequestMapping(path = {"/addNews/"}, method = {RequestMethod.POST})
-   // @ResponseBody
-    public String addNews(@RequestParam("image")  MultipartFile image,
+    @RequestMapping(path = {"/user/addNews/"}, method = {RequestMethod.POST})
+   @ResponseBody
+    public String addNews(@RequestParam("image") String image,
                           @RequestParam("title") String title,
                           @RequestParam("link") String link){
         try{
@@ -89,21 +86,21 @@ public class NewsController {
                 news.setUserId(3);
             }
 
-            String fileUrl = qiniuService.saveImage(image);
+            //String fileUrl = qiniuService.saveImage(image);
             //校验成功后，需要设置发布页面需要的内容
-            news.setImage(fileUrl);
+            news.setImage(image);
             news.setCreatedDate(new Date());
             news.setTitle(title);
             news.setLink(link);
 
             //将news这个对象插入到页面中，发布成功
             newsService.addNews(news);
-            //return ToutiaoUtil.getJSONString(0);
-            return "redirect:/";
+            return ToutiaoUtil.getJSONString(0);
+           // return "redirect:/";
         }catch (Exception e){
             logger.error("添加咨询错误"+ e.getMessage());
-            //return ToutiaoUtil.getJSONString(1,"发布新闻信息失败");
-            return "addNews";
+            return ToutiaoUtil.getJSONString(1,"发布新闻信息失败");
+            //return "addNews";
         }
     }
 
@@ -112,13 +109,21 @@ public class NewsController {
 //
 //        return "upload";
 //    }
-    @RequestMapping(value = "/uploadImage",method = RequestMethod.GET)
-    public String uploadImage(){
-
-        return "addNews";
-    }
+//    @RequestMapping(value = "/uploadImage",method = RequestMethod.GET)
+//    public String uploadImage(){
+//
+//        return "addNews";
+//    }
 //    @RequestMapping(value = "/user/addNews/",method = {RequestMethod.GET})
 //    public String addNews(){
 //        return "addNews";
 //    }
+
+    //资讯的详情页
+//    @RequestMapping(path = {"/newsDetail/"}, method = {RequestMethod.GET})
+//    public String newDetail(){
+//        return "detail";
+//    }
+
+
 }

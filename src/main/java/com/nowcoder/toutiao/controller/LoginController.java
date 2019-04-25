@@ -32,7 +32,7 @@ public class LoginController {
 
     //==========================注册过程===============================================
     @RequestMapping(path = {"/reg/"},method = {RequestMethod.GET,RequestMethod.POST})
-    //@ResponseBody
+    @ResponseBody
     public String reg(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
                       @RequestParam(value = "rember",defaultValue ="0" ) int rememberme,
@@ -50,24 +50,25 @@ public class LoginController {
                    cookie.setMaxAge(3600*24*5);
                }
                response.addCookie(cookie);
-//               return ToutiaoUtil.getJSONString(0,"注册成功");
-               return "redirect:/";
+              return ToutiaoUtil.getJSONString(0,"注册成功");
+               //return "redirect:/";
            }else {
-               //return ToutiaoUtil.getJSONString(1,map);
-               model.addAttribute("error","注册失败，请重新注册");
-               return "redirect:/register";
+
+              // model.addAttribute("error","注册失败，请重新注册");
+               // return "redirect:/register";
+               return ToutiaoUtil.getJSONString(1,map);
            }
 
        }catch (Exception e){
            logger.error("注册异常" + e.getMessage());
-           model.addAttribute("error","注册异常");
-           //return ToutiaoUtil.getJSONString(1,"注册异常");
-           return "redirect:/register";
+           //model.addAttribute("error","注册异常");
+           return ToutiaoUtil.getJSONString(1,"注册异常");
+           //return "redirect:/register";
        }
     }
     //==========================登录过程===============================================
-    @RequestMapping(path = {"/log/"},method = {RequestMethod.GET,RequestMethod.POST})
-    //@ResponseBody
+    @RequestMapping(path = {"/login/"},method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
     public String login(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
                       @RequestParam(value = "rember",defaultValue ="0" ) int rememberme,
@@ -84,37 +85,38 @@ public class LoginController {
                 }
 
                 response.addCookie(cookie);
-                return "redirect:/";
-                //return ToutiaoUtil.getJSONString(0,"注册成功..");
+                // return "redirect:/";
+               return ToutiaoUtil.getJSONString(0,"注册成功..");
             }else {
-                //return ToutiaoUtil.getJSONString(1,map);
-                model.addAttribute("error","登录失败,请重新登录!");
-                return "redirect:/login";
+                return ToutiaoUtil.getJSONString(1,map);
+                //model.addAttribute("error","登录失败,请重新登录!");
+                //return "redirect:/login";
             }
 
         }catch (Exception e){
             logger.error("登录异常" + e.getMessage());
-            //return  ToutiaoUtil.getJSONString(1,"登录异常");
-            model.addAttribute("error","登录异常");
-            return "redirect:/login";
+
+            //model.addAttribute("error","登录异常");
+            //return "redirect:/login";
+            return  ToutiaoUtil.getJSONString(1,"登录异常");
         }
     }
-    @RequestMapping(value = "/login",method = RequestMethod.GET)
-    public String login(){
-
-        return "login";
-    }
-
-    @RequestMapping(value = "/register",method = RequestMethod.GET)
-    public String register(){
-
-        return "register";
-    }
+//    @RequestMapping(value = "/login",method = RequestMethod.GET)
+//    public String login(){
+//
+//        return "login";
+//    }
+//
+//    @RequestMapping(value = "/register",method = RequestMethod.GET)
+//    public String register(){
+//
+//        return "register";
+//    }
     //==========================登出过程===============================================
-    @RequestMapping(path = {"/logout"},method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(path = {"/logout/"},method = {RequestMethod.GET,RequestMethod.POST})
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
-        logger.info("logout：跳转到首页");
+        //logger.info("logout：跳转到首页");
         return "redirect:/";
     }
 }
