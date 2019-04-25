@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="fragments/layout">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>头条资讯 - 牛客网</title>
@@ -12,24 +14,20 @@
 
     <link rel="stylesheet" media="all" href="/styles/style.css">
 
+
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title>头条资讯-用户登录注册页面</title>
     <link rel="stylesheet" th:href="@{styles/signin.css}"/>
 
     <style type="text/css">
-        body {
-            padding-top: 50px;
-        }
-
         .starter-template {
             padding: 40px 15px;
             text-align: center;
         }
     </style>
 </head>
+<body>
 
-
-<body class="welcome_index">
 <header class="navbar navbar-default navbar-static-top bs-docs-nav" id="top" role="banner">
     <div class="container">
         <div class="navbar-header">
@@ -49,9 +47,9 @@
         <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
 
             <ul class="nav navbar-nav navbar-right">
-                <li class=""><a href="http://localhost:8080/uploadImage">分享</a></li>
+                <li class=""><a href="http://localhost:8080/upload">分享</a></li>
 
-                #if ($user)upload
+                #if ($user)
                 <li class="js-login"><a href="javascript:void(0);">$!{user.name}</a></li>
                 #else
                 <li class="js-login"><a href="http://localhost:8080/register">注册</a></li>
@@ -64,49 +62,59 @@
     </div>
 </header>
 
-<div class="container">
-            <div class="starter-template">
-                <!--<p th:if="${param.logout}" class="bg-warning">已注销</p>-->
-                <!--<p th:if="${error}" class="bg-danger" th:text="${error}">有错误，请重试</p>-->
-                <h2>头条账户注册页面</h2>
-                <form class="form-signin" role="form" name="loginform" th:action="@{/reg/}" action="/reg/"
-                      method="post">
-                    <div class="form-group">
-                        <label for="username" class="col-sm-2 control-label">账号</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="username" value="" placeholder="账号"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="col-sm-2 control-label">密码</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" name="password" placeholder="密码"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
 
-                            <input type="submit"  id="register" value="注册" class="btn btn-info" name="注册"/>
-                        </div>
-                    </div>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="starter-template">
+            <h2>发布资讯</h2>
+            <form class="form-signin" role="form" enctype="multipart/form-data"  name="uploadfrom"
+                  th:action="@{/user/addNews/}"
+                  action="/user/addNews/"
+                  method="post">
 
-                </form>
-            </div>
+                <div class="form-group">
+                    <label for="title" class="col-sm-2 control-label">标题</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="title" id= "title" value=""
+                               placeholder="请输入资讯标题"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="link" class="col-sm-2 control-label">链接</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="link" id="link" placeholder="请输入资讯链接"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image" class="col-sm-2 control-label">资讯图片</label>
+                    <div class="col-sm-10">
+                        <input type="file" class="form-control" name="image" id="image" value="" placeholder="上传图片"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <input type="submit" id="submit" value="提交" class="btn btn-primary" name="上传"/>
+                    </div>
+                </div>
+
+            </form>
         </div>
-
     </div>
 
+</div>
 
-    <footer>
-        <div class="container">
-            <p class="text-center">
-                <a href="http://nowcoder.com/about">关于我们</a>
-                <a href="http://nowcoder.com/download">头条客户端</a>
-            </p>
-            <p class="text-center">© 2013-2020 头条八卦</p>
-        </div>
+<footer>
+    <div class="container">
+        <p class="text-center">
+            <a href="http://nowcoder.com/about">关于我们</a>
+            <a href="http://nowcoder.com/download">头条客户端</a>
+        </p>
+        <p class="text-center">© 2013-2020 头条八卦</p>
+    </div>
 
-    </footer>
+</footer>
 
 
 </body>

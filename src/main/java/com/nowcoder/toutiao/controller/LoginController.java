@@ -70,10 +70,11 @@ public class LoginController {
     //@ResponseBody
     public String login(Model model, @RequestParam("username") String username,
                       @RequestParam("password") String password,
-                      @RequestParam(value = "rember",defaultValue ="0" ) int rememberme
+                      @RequestParam(value = "rember",defaultValue ="0" ) int rememberme,
+                        HttpServletResponse response
     ){
         try{
-            Map<String ,Object> map = userService.register(username,password);
+            Map<String ,Object> map = userService.login(username,password);
             if(map.containsKey("ticket")){
                 Cookie cookie = new Cookie("ticket",map.get("ticket").toString());
                 cookie.setPath("/");
@@ -81,19 +82,21 @@ public class LoginController {
                     //如果remember大于0，就将cookie的有效时间设置为5天，默认的是浏览器关闭后cookie就没有了
                     cookie.setMaxAge(3600*24*5);
                 }
+
+                response.addCookie(cookie);
                 return "redirect:/";
-                //return ToutiaoUtil.getJSONString(0,"注册成功...");
+                //return ToutiaoUtil.getJSONString(0,"注册成功..");
             }else {
                 //return ToutiaoUtil.getJSONString(1,map);
                 model.addAttribute("error","登录失败,请重新登录!");
-                return "redirect:/";
+                return "redirect:/login";
             }
 
         }catch (Exception e){
             logger.error("登录异常" + e.getMessage());
             //return  ToutiaoUtil.getJSONString(1,"登录异常");
             model.addAttribute("error","登录异常");
-            return "redirect:/";
+            return "redirect:/login";
         }
     }
     @RequestMapping(value = "/login",method = RequestMethod.GET)
