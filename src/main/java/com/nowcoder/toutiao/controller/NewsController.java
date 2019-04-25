@@ -74,9 +74,9 @@ public class NewsController {
     }
 
     //增加新闻信息
-    @RequestMapping(path = {"/user/addNews/"}, method = {RequestMethod.POST})
-    @ResponseBody
-    public String addNews(@RequestParam("image") String image,
+    @RequestMapping(path = {"/addNews/"}, method = {RequestMethod.POST})
+   // @ResponseBody
+    public String addNews(@RequestParam("image")  MultipartFile image,
                           @RequestParam("title") String title,
                           @RequestParam("link") String link){
         try{
@@ -89,18 +89,21 @@ public class NewsController {
                 news.setUserId(3);
             }
 
+            String fileUrl = qiniuService.saveImage(image);
             //校验成功后，需要设置发布页面需要的内容
-            news.setImage(image);
+            news.setImage(fileUrl);
             news.setCreatedDate(new Date());
             news.setTitle(title);
             news.setLink(link);
 
             //将news这个对象插入到页面中，发布成功
             newsService.addNews(news);
-            return ToutiaoUtil.getJSONString(0);
+            //return ToutiaoUtil.getJSONString(0);
+            return "redirect:/";
         }catch (Exception e){
             logger.error("添加咨询错误"+ e.getMessage());
-            return ToutiaoUtil.getJSONString(1,"发布新闻信息失败");
+            //return ToutiaoUtil.getJSONString(1,"发布新闻信息失败");
+            return "addNews";
         }
     }
 
@@ -112,7 +115,7 @@ public class NewsController {
     @RequestMapping(value = "/uploadImage",method = RequestMethod.GET)
     public String uploadImage(){
 
-        return "upload";
+        return "addNews";
     }
 //    @RequestMapping(value = "/user/addNews/",method = {RequestMethod.GET})
 //    public String addNews(){
