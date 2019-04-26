@@ -1,15 +1,17 @@
 package com.nowcoder.toutiao.controller;
 
 import com.nowcoder.toutiao.ToutiaoUtil.ToutiaoUtil;
-import com.nowcoder.toutiao.model.HostHolder;
-import com.nowcoder.toutiao.model.News;
+import com.nowcoder.toutiao.model.*;
+import com.nowcoder.toutiao.service.CommentService;
 import com.nowcoder.toutiao.service.NewsService;
 //import com.sun.deploy.net.HttpResponse;
 import com.nowcoder.toutiao.service.QiniuService;
+import com.nowcoder.toutiao.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @program: new_toutiao
@@ -36,6 +40,10 @@ public class NewsController {
     //用于判断当前用户有木有登录账户
     @Autowired
     HostHolder hostHolder;
+    @Autowired
+    UserService userService;
+    @Autowired
+    CommentService commentService;
     //上传图片
     @RequestMapping(path = {"/uploadImage/"}, method = {RequestMethod.POST})
     @ResponseBody
@@ -120,10 +128,56 @@ public class NewsController {
 //    }
 
     //资讯的详情页
-//    @RequestMapping(path = {"/newsDetail/"}, method = {RequestMethod.GET})
-//    public String newDetail(){
-//        return "detail";
-//    }
+    @RequestMapping(path = {"/news/{newsId}"}, method = {RequestMethod.GET})
+    public String newDetail(@PathVariable("newsId") int newId, Model model){
+       //首先获得新闻资讯
+        News news = newsService.getById(newId);
+        if(news!=null){
+            //新闻资讯不为空，那么就可以评论
+            List<Comment> comments = commentService.getCommentByEntity(news.getId(),EntityType.ENTITY_NEWS);
+            //专门用来显示在页面上显示的
+            List<ViewObject> commentVOs = new ArrayList<ViewObject>();
+            for(Comment comment : comments){
+                ViewObject vo = new ViewObject();
+                vo.set("comment",comment);
+                vo.set("user",userService.getUser(comment.getUserId()));
+                commentVOs.add(vo);
+            }
+            //这个语句的作用就是让前端页面显示，传入的数据名字就是comments，内容就是commentVOs的内容；同理如下
+            model.addAttribute("comments",commentVOs);
+        }
+        //页面展示内容
+        model.addAttribute("news",news);
+        model.addAttribute("owner",userService.getUser(news.getUserId()));
+        return "detail";
+    }
+
+    //在资讯的详情页中==添加评论
+    @RequestMapping(path = {"/addComment"}, method = {RequestMethod.POST})
+    public String addComment(@RequestParam("newsId") int newsId,
+                             @RequestParam("content") String content){
+        try{
+            Comment comment = new Comment();
+            comment.setUserId(hostHolder.getUser().getId());
+            comment.setContent(content);
+            comment.setEntityId(newsId);
+            comment.setEntityType(EntityType.ENTITY_NEWS);
+            comment.setCreatedDate(new Date());
+//       ====================同步处理添加评论===============================
+            //添加评论内容
+            commentService.addComment(comment);
+            //首先得到评论的个数，然后把个数更新到news信息流里面评论的数量显示
+            int count= commentService.getCommentCount(comment.getEntityId(),comment.getEntityType());
+            newsService.updateCommentCount(comment.getEntityId(),count);
+            //评论部分可以模仿牛客，分页显示；目前显示是全部
+//       ====================异步处理添加评论===============================
+
+        }catch (Exception e){
+            logger.error("增加评论失败"+e.getMessage());
+        }
+        //返回到资讯详情页
+        return "redirect:/news/"+String.valueOf(newsId);
+    }
 
 
 }

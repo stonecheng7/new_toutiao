@@ -1,12 +1,12 @@
 package com.nowcoder.toutiao;
 
 import com.nowcoder.toutiao.ToutiaoApplication;
+import com.nowcoder.toutiao.dao.CommentDAO;
 import com.nowcoder.toutiao.dao.LoginTicketDAO;
 import com.nowcoder.toutiao.dao.NewsDAO;
 import com.nowcoder.toutiao.dao.UserDAO;
-import com.nowcoder.toutiao.model.LoginTicket;
-import com.nowcoder.toutiao.model.News;
-import com.nowcoder.toutiao.model.User;
+import com.nowcoder.toutiao.model.*;
+import com.nowcoder.toutiao.service.CommentService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +30,8 @@ public class InitDatabaseTests {
 
     @Autowired
     LoginTicketDAO loginTicketDAO;
+    @Autowired
+    CommentDAO commentDAO;
     @Test
     public void initData() {
         Random random = new Random();
@@ -52,6 +54,17 @@ public class InitDatabaseTests {
             news.setTitle(String.format("TITLE{%d}", i));
             news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
             newsDAO.addNews(news);
+
+            for(int j=0;j<3;++j){
+                Comment comment = new Comment();
+                comment.setUserId(i+1);
+                comment.setEntityId(news.getId());
+                comment.setEntityType(EntityType.ENTITY_NEWS);
+                comment.setStatus(0);
+                comment.setCreatedDate(new Date());
+                comment.setContent("Comment%d" +String.valueOf(j));
+                commentDAO.addComment(comment);
+            }
 
             user.setPassword("newpassword");
             userDAO.updatePassword(user);
@@ -77,6 +90,8 @@ public class InitDatabaseTests {
 
         Assert.assertEquals(1,loginTicketDAO.selectByTicket("ticket1").getUserId());
         Assert.assertEquals(2,loginTicketDAO.selectByTicket("ticket1").getStatus());
+        //向数据库中插入数据
+        Assert.assertNotNull(commentDAO.selectByEntity(1,EntityType.ENTITY_NEWS).get(0));
     }
 
 }

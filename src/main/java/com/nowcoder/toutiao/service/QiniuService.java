@@ -84,12 +84,12 @@ public class QiniuService {
             if (res.isOK() && res.isJson()) {
                 return ToutiaoUtil.QINIU_DOMAIN_PREFIX + putRet.key;
             } else {
-                logger.error("七牛异常:" + res.bodyString());
+                logger.error("七牛异常 try:" + res.bodyString());
                 return null;
             }
         } catch (QiniuException e) {
             // 请求失败时打印的异常的信息
-            logger.error("七牛异常:" + e.getMessage());
+            logger.error("七牛异常 catch:" + e.getMessage());
             return null;
 //            Response r = e.response;
 //            System.err.println(r.toString());
