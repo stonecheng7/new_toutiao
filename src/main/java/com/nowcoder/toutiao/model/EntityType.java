@@ -7,6 +7,6 @@ package com.nowcoder.toutiao.model;
  * @create: 2019-04-26 10:45
  */
 public class EntityType {
-    public static int ENTITY_NEWS =1;
-    public static int ENTITY_COMMENT =2;
+    public static int ENTITY_NEWS = 1;
+    public static int ENTITY_COMMENT = 2;
 }

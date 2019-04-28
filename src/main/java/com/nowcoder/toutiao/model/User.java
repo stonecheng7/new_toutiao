@@ -12,22 +12,15 @@ public class User {
     private String password;
     private String salt;
     private String headUrl;
-    public User(){
+
+    public User() {
 
     }
-    public User(String name){
+    public User(String name) {
         this.name = name;
         this.password = "";
         this.salt = "";
         this.headUrl = "";
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -60,5 +53,13 @@ public class User {
 
     public void setHeadUrl(String headUrl) {
         this.headUrl = headUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

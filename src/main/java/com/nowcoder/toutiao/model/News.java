@@ -7,13 +7,21 @@ import  java.util.Date;
  * @create: 2019-04-19 19:43
  */
 public class News {
+
     private int id;
+
     private String title;
+
     private String link;
+
     private String image;
+
     private int likeCount;
+
     private int commentCount;
+
     private Date createdDate;
+
     private int userId;
 
     public int getId() {

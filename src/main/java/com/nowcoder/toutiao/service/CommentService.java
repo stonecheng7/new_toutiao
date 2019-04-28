@@ -19,9 +19,10 @@ public class CommentService {
     @Autowired
     private CommentDAO commentDAO;
     //选择一个评论
-    public List<Comment> getCommentByEntity(int entityId,int entityType){
-        return commentDAO.selectByEntity(entityId,entityType);
+    public List<Comment> getCommentsByEntity(int entityId, int entityType) {
+        return commentDAO.selectByEntity(entityId, entityType);
     }
+
     //增加一个评论
     public int addComment(Comment comment){
         return commentDAO.addComment(comment);

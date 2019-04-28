@@ -1,6 +1,9 @@
 package com.nowcoder.toutiao.controller;
 
 import com.nowcoder.toutiao.ToutiaoUtil.ToutiaoUtil;
+import com.nowcoder.toutiao.async.EventModel;
+import com.nowcoder.toutiao.async.EventProducer;
+import com.nowcoder.toutiao.async.EventType;
 import com.nowcoder.toutiao.service.UserService;
 //import com.sun.media.jfxmedia.logging.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,8 @@ public class LoginController {
     @Autowired
     UserService userService;
 
-
+    @Autowired
+    EventProducer eventProducer;
     //==========================注册过程===============================================
     @RequestMapping(path = {"/reg/"},method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -85,8 +89,12 @@ public class LoginController {
                 }
 
                 response.addCookie(cookie);
+//                eventProducer.fireEvent(new EventModel(EventType.LOGIN)
+//                        .setActorId((int) map.get("userId"))
+//                        .setExt("username", username).setExt("email", "zjuyxy@qq.com"));
+                return ToutiaoUtil.getJSONString(0, "成功");
                 // return "redirect:/";
-               return ToutiaoUtil.getJSONString(0,"注册成功..");
+               //return ToutiaoUtil.getJSONString(0,"注册成功..");
             }else {
                 return ToutiaoUtil.getJSONString(1,map);
                 //model.addAttribute("error","登录失败,请重新登录!");
@@ -94,11 +102,11 @@ public class LoginController {
             }
 
         }catch (Exception e){
-            logger.error("登录异常" + e.getMessage());
+            logger.error("登录异常2" + e.getMessage());
 
             //model.addAttribute("error","登录异常");
             //return "redirect:/login";
-            return  ToutiaoUtil.getJSONString(1,"登录异常");
+            return  ToutiaoUtil.getJSONString(1,"登录异常1");
         }
     }
 //    @RequestMapping(value = "/login",method = RequestMethod.GET)
@@ -113,7 +121,7 @@ public class LoginController {
 //        return "register";
 //    }
     //==========================登出过程===============================================
-    @RequestMapping(path = {"/logout/"},method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(path = {"/logout"},method = {RequestMethod.GET,RequestMethod.POST})
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
         //logger.info("logout：跳转到首页");
